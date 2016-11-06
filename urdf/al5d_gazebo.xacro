@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<robot name="al5d" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:property name="M_PI" value="3.14159"/>
+
+    <property name="base_height" value="0.043" />
+    <property name="base_radius" value="0.048" />
+    <property name="upper_base_height" value="0.006" />
+    <property name="upper_arm_offset" value="0.022" />
+    <property name="upper_arm_length" value="0.14605" />
+    <property name="lower_arm_length" value="0.187325" />
+    <property name="wrist_length" value="0.055" />
+    <property name="gripper_length" value="0.06" />
+  
+    <link name="base">
+      <visual>
+        <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="${base_height}" radius="${base_radius}"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 0.85"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="${base_height}" radius="${base_radius}"/>
+        </geometry>
+      </collision>
+	  <inertial>
+        <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    </link>
+    <link name="upper_base">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="${upper_base_height}" radius="${base_radius}"/>
+        </geometry>
+        <material name="black">
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+           <cylinder length="${upper_base_height}" radius="${base_radius}"/>
+        </geometry>
+      </collision>
+	  <inertial>
+        <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    </link>
+    <link name="upper_arm">
+      <visual>
+        <origin xyz="${upper_arm_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${upper_arm_length} 0.05 0.05"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.8 0.8 0.8 0.85"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${upper_arm_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${upper_arm_length} 0.05 0.05"/>
+        </geometry>
+      </collision>
+	  <inertial>
+        <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    </link>
+    <link name="lower_arm">
+      <visual>
+        <origin xyz="${lower_arm_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${lower_arm_length} 0.035 0.035"/>
+        </geometry>
+        <material name="blue">
+          <color rgba="0.4 0.4 1 0.85"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${lower_arm_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${lower_arm_length} 0.035 0.035"/>
+        </geometry>
+      </collision>
+	  <inertial>
+        <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    </link>
+    <link name="wrist">
+      <visual>
+        <origin xyz="${wrist_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${wrist_length} 0.025 0.025"/>
+        </geometry>
+        <material name="silver">
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${wrist_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${wrist_length} 0.025 0.025"/>
+        </geometry>
+      </collision>
+	  <inertial>
+        <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    </link>
+    <link name="gripper">
+      <visual>
+        <origin xyz="${gripper_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${gripper_length} 0.02 0.05"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1 0.3 0.3 0.85"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${gripper_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${gripper_length} 0.02 0.05"/>
+        </geometry>
+      </collision>
+	  <inertial>
+        <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    </link>
+    <link name="end">
+    </link>
+
+    <!-- joints -->
+    <joint name="base_rotate" type="revolute">
+      <origin xyz="0 0 ${base_height + upper_base_height}" rpy="0 0 0"/>
+      <parent link="base"/>
+      <child link="upper_base"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-${M_PI/2}" upper="${M_PI/2}" effort="0" velocity="3.67"/>
+    </joint>
+    <joint name="shoulder_tilt" type="revolute">
+      <origin xyz="0 0 ${upper_arm_offset}" rpy="${M_PI/2} -${M_PI/2} 0 "/>
+      <parent link="upper_base"/>
+      <child link="upper_arm"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-${M_PI/2}" upper="${M_PI/2}" effort="0" velocity="3.32"/>
+    </joint>
+    <joint name="elbow_tilt" type="revolute">
+      <origin xyz="${upper_arm_length} 0 0" rpy="0 0 -${M_PI/2}" />
+      <parent link="upper_arm"/>
+      <child link="lower_arm"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-${M_PI/2}" upper="${M_PI/2}" effort="0" velocity="3.67"/>
+    </joint>
+    <joint name="wrist_tilt" type="revolute">
+      <origin xyz="${lower_arm_length} 0 0" rpy="0 0 0"/>
+      <parent link="lower_arm"/>
+      <child link="wrist"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-${M_PI/2}" upper="${M_PI/2}" effort="0" velocity="6.98"/>
+    </joint>
+    <joint name="wrist_rotate" type="revolute">
+      <origin xyz="${wrist_length} 0 0" rpy="0 0 0"/>
+      <parent link="wrist"/>
+      <child link="gripper"/>
+      <axis xyz="1 0 0"/>
+      <limit lower="-${M_PI/2}" upper="${M_PI/2}" effort="0" velocity="6.98"/>
+    </joint>
+    <joint name="end" type="fixed">
+      <origin xyz="${wrist_length} 0 0" rpy="0 0 0"/>
+      <parent link="gripper"/>
+      <child link="end"/>
+    </joint>
+
+    <!-- plugin -->
+    <gazebo>
+      <plugin name="al5d_controller" filename="libgazebo_ros_joint_pose_trajectory.so" >
+        <topicName>/joint_controller/command</topicName>
+        <updateRate>0.01</updateRate>
+      </plugin>
+    </gazebo>
+</robot>
