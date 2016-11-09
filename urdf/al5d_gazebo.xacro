@@ -3,15 +3,28 @@
 
     <xacro:property name="M_PI" value="3.14159"/>
 
-    <property name="base_height" value="0.043" />
-    <property name="base_radius" value="0.048" />
-    <property name="upper_base_height" value="0.006" />
-    <property name="upper_arm_offset" value="0.022" />
-    <property name="upper_arm_length" value="0.14605" />
-    <property name="lower_arm_length" value="0.187325" />
-    <property name="wrist_length" value="0.055" />
-    <property name="gripper_length" value="0.06" />
+    <xacro:property name="base_height" value="0.043" />
+    <xacro:property name="base_radius" value="0.048" />
+    <xacro:property name="upper_base_height" value="0.006" />
+    <xacro:property name="upper_arm_offset" value="0.022" />
+    <xacro:property name="upper_arm_length" value="0.14605" />
+    <xacro:property name="upper_arm_width" value="0.05" />
+    <xacro:property name="lower_arm_length" value="0.187325" />
+    <xacro:property name="lower_arm_width" value="0.035" />
+    <xacro:property name="wrist_length" value="0.055" />
+    <xacro:property name="wrist_width" value="0.025" />
+    <xacro:property name="gripper_length" value="0.06" />
+    <xacro:property name="gripper_width" value="0.05" />
+    <xacro:property name="gripper_height" value="0.02" />
+    <xacro:property name="finger_length" value="0.04" />
   
+    <xacro:property name="inertia_block">
+      <inertial>
+        <mass value="0.3"/>
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+      </inertial>
+    </xacro:property>
+
     <link name="base">
       <visual>
         <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
@@ -28,10 +41,7 @@
           <cylinder length="${base_height}" radius="${base_radius}"/>
         </geometry>
       </collision>
-	  <inertial>
-        <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
+      <xacro:insert_block name="inertia_block" />
     </link>
     <link name="upper_base">
       <visual>
@@ -48,16 +58,13 @@
            <cylinder length="${upper_base_height}" radius="${base_radius}"/>
         </geometry>
       </collision>
-	  <inertial>
-        <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
+      <xacro:insert_block name="inertia_block" />
     </link>
     <link name="upper_arm">
       <visual>
         <origin xyz="${upper_arm_length/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${upper_arm_length} 0.05 0.05"/>
+          <box size="${upper_arm_length} ${upper_arm_width} ${upper_arm_width}"/>
         </geometry>
         <material name="silver">
           <color rgba="0.8 0.8 0.8 0.85"/>
@@ -66,19 +73,16 @@
       <collision>
         <origin xyz="${upper_arm_length/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${upper_arm_length} 0.05 0.05"/>
+          <box size="${upper_arm_length} ${upper_arm_width} ${upper_arm_width}"/>
         </geometry>
       </collision>
-	  <inertial>
-        <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
+      <xacro:insert_block name="inertia_block" />
     </link>
     <link name="lower_arm">
       <visual>
         <origin xyz="${lower_arm_length/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${lower_arm_length} 0.035 0.035"/>
+          <box size="${lower_arm_length} ${lower_arm_width} ${lower_arm_width}"/>
         </geometry>
         <material name="blue">
           <color rgba="0.4 0.4 1 0.85"/>
@@ -87,19 +91,16 @@
       <collision>
         <origin xyz="${lower_arm_length/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${lower_arm_length} 0.035 0.035"/>
+          <box size="${lower_arm_length} ${lower_arm_width} ${lower_arm_width}"/>
         </geometry>
       </collision>
-	  <inertial>
-        <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
+      <xacro:insert_block name="inertia_block" />
     </link>
     <link name="wrist">
       <visual>
         <origin xyz="${wrist_length/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${wrist_length} 0.025 0.025"/>
+          <box size="${wrist_length} ${wrist_width} ${wrist_width}"/>
         </geometry>
         <material name="silver">
         </material>
@@ -107,34 +108,69 @@
       <collision>
         <origin xyz="${wrist_length/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${wrist_length} 0.025 0.025"/>
+          <box size="${wrist_length} ${wrist_width} ${wrist_width}"/>
         </geometry>
       </collision>
-	  <inertial>
-        <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
+      <xacro:insert_block name="inertia_block" />
     </link>
-    <link name="gripper">
+    <link name="gripper_base">
       <visual>
-        <origin xyz="${gripper_length/2} 0 0" rpy="0 0 0"/>
+        <origin xyz="${gripper_height/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${gripper_length} 0.02 0.05"/>
+          <box size="${gripper_height} ${gripper_height} ${gripper_width}"/>
         </geometry>
         <material name="red">
           <color rgba="1 0.3 0.3 0.85"/>
         </material>
       </visual>
       <collision>
-        <origin xyz="${gripper_length/2} 0 0" rpy="0 0 0"/>
+        <origin xyz="${gripper_width/2} 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${gripper_length} 0.02 0.05"/>
+          <box size="${gripper_height} ${gripper_height} ${gripper_width}"/>
         </geometry>
       </collision>
-	  <inertial>
-        <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
+      <xacro:insert_block name="inertia_block" />
+    </link>
+    <link name="gripper_dummy">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
+    </link>
+    <link name="gripper_rightfinger">
+      <visual>
+        <origin xyz="${finger_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${finger_length} ${gripper_height} ${gripper_height}"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1 0.3 0.3 0.85"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${gripper_width/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${gripper_width} ${gripper_height} ${gripper_height}"/>
+        </geometry>
+      </collision>
+      <xacro:insert_block name="inertia_block" />
+    </link>
+    <link name="gripper_leftfinger">
+      <visual>
+        <origin xyz="${finger_length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${finger_length} ${gripper_height} ${gripper_height}"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1 0.3 0.3 0.85"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${gripper_width/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${gripper_width} ${gripper_height} ${gripper_height}"/>
+        </geometry>
+      </collision>
+      <xacro:insert_block name="inertia_block" />
     </link>
     <link name="end">
     </link>
@@ -171,13 +207,36 @@
     <joint name="wrist_rotate" type="revolute">
       <origin xyz="${wrist_length} 0 0" rpy="0 0 0"/>
       <parent link="wrist"/>
-      <child link="gripper"/>
+      <child link="gripper_base"/>
       <axis xyz="1 0 0"/>
       <limit lower="-${M_PI/2}" upper="${M_PI/2}" effort="0" velocity="6.98"/>
     </joint>
+    <joint name="open_gripper" type="prismatic" >
+      <origin xyz="${gripper_height} 0 0.01" rpy="0 0 0"/>
+      <parent link="gripper_base"/>
+      <child link="gripper_dummy"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="0" upper="${M_PI/2}" effort="0" velocity="6.98"/>
+    </joint>
+    <joint name="open_gripperright" type="prismatic">
+      <origin xyz="${gripper_height} 0 0.01" rpy="0 0 0"/>
+      <parent link="gripper_base"/>
+      <child link="gripper_rightfinger"/>
+      <axis xyz="0 0 1"/>
+      <mimic joint="open_gripper" multiplier="${0.02/M_PI}" offset="0"/>
+      <limit lower="0" upper="0.015" effort="0" velocity="6.98"/>
+    </joint>
+    <joint name="open_gripperleft" type="prismatic">
+      <origin xyz="${gripper_height} 0 -0.01" rpy="0 0 0"/>
+      <parent link="gripper_base"/>
+      <child link="gripper_leftfinger"/>
+      <axis xyz="0 0 1"/>
+      <mimic joint="open_gripper" multiplier="${-0.02/M_PI}" offset="0"/>
+      <limit lower="0" upper="0.015" effort="0" velocity="6.98"/>
+    </joint>
     <joint name="end" type="fixed">
       <origin xyz="${wrist_length} 0 0" rpy="0 0 0"/>
-      <parent link="gripper"/>
+      <parent link="gripper_base"/>
       <child link="end"/>
     </joint>
 
