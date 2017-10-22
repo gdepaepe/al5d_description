@@ -240,7 +240,7 @@
       <child link="end"/>
     </joint>
 
-    <!-- plugin -->
+    <!-- plugins -->
     <gazebo>
       <plugin name="al5d_controller" filename="libgazebo_ros_joint_pose_trajectory.so" >
         <topicName>/joint_controller/command</topicName>
